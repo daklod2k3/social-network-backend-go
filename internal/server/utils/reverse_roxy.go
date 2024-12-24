@@ -8,7 +8,7 @@ import (
 	"net/url"
 )
 
-func reverseProxy(c *gin.Context, reversePath string, method string) {
+func ReverseProxy(c *gin.Context, reversePath string, method string) {
 
 	req := c.Request
 
