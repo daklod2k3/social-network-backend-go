@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"core/shared/config"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"social-backend/internal/server"
+	"core/internal/server"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {
@@ -37,6 +38,9 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 }
 
 func main() {
+
+	// Read config file
+	fmt.Println(config.Config.GetString("database.connectionString"))
 
 	server := server.NewServer()
 

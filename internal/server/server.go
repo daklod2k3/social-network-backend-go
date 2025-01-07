@@ -1,25 +1,23 @@
 package server
 
 import (
+	"core/shared/database"
 	"fmt"
+	"github.com/spf13/viper"
 	"net/http"
-	"os"
-	"strconv"
+
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
-
-	"social-backend/internal/database"
 )
 
 type Server struct {
 	port int
-
-	db database.Service
+	db   database.Service
 }
 
 func NewServer() *http.Server {
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	port := viper.GetInt("port")
 	NewServer := &Server{
 		port: port,
 
