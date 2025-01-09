@@ -2,11 +2,11 @@ package entity
 
 import (
 	"context"
-	"core/shared/database"
-	"core/shared/entity"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"shared/database"
+	"shared/entity"
 	"time"
 )
 

@@ -2,9 +2,9 @@ package database
 
 import (
 	"context"
-	"core/shared/config"
 	"fmt"
 	"log"
+	"shared/config"
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"

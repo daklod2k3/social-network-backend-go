@@ -1,6 +1,8 @@
 package auth
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 func ApplyRoute(r *gin.RouterGroup) {
 	rAuth := r.Group("auth")

@@ -1,10 +1,10 @@
 package server
 
 import (
-	"core/shared/database"
 	"fmt"
 	"github.com/spf13/viper"
 	"net/http"
+	"shared/database"
 
 	"time"
 

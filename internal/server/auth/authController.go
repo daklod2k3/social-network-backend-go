@@ -1,9 +1,10 @@
 package auth
 
 import (
-	"core/internal/server/auth/entity"
-	shared "core/shared/entity"
+	"auth/entity"
+
 	"github.com/gin-gonic/gin"
+	shared "shared/entity"
 )
 
 //type Controller struct {
@@ -61,7 +62,7 @@ func (ctl *Controller) LoginHandler(c *gin.Context) {
 	//fmt.Println(form)
 	rs, err := ctl.service.Login(form)
 	if err != nil {
-		spErr := ctl.service.Error(err)
+		spErr := entity.Error(err)
 		shared.WriteError(c, spErr.Code, spErr.Msg)
 		return
 	}
@@ -69,17 +70,17 @@ func (ctl *Controller) LoginHandler(c *gin.Context) {
 }
 
 func (ctl *Controller) RegisterHandler(c *gin.Context) {
-	var form entity.Register
-	if err := c.ShouldBindJSON(&form); err != nil {
-		c.AbortWithError(400, err)
-	}
-	//fmt.Println(form)
-	rs, err := ctl.service.Register(form)
-	if err != nil {
-		shared.WriteError(c, 400, ctl.service.Error(err).Msg)
-		return
-	}
-	c.JSON(200, rs)
+	//var form entity.Register
+	//if err := c.ShouldBindJSON(&form); err != nil {
+	//	c.AbortWithError(400, err)
+	//}
+	////fmt.Println(form)
+	//rs, err := ctl.service.Register(form)
+	//if err != nil {
+	//	shared.WriteError(c, 400, ctl.service.Error(err).Msg)
+	//	return
+	//}
+	c.JSON(200, gin.H{})
 }
 
 func (ctl *Controller) GetSessionHandler(c *gin.Context) {

@@ -2,7 +2,7 @@ package server
 
 import (
 	"core/internal/server/auth"
-	"core/shared/database"
+	"core/internal/shared/database"
 	"net/http"
 
 	"github.com/gin-contrib/cors"

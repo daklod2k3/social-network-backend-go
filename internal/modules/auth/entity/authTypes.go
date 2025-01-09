@@ -13,3 +13,8 @@ type Register struct {
 type SessionResponse struct {
 	Token string `json:"access_token"`
 }
+
+type AuthResponse struct {
+	AccessToken string `json:"access_token"`
+	Name        string `json:"name"`
+}
