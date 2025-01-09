@@ -44,7 +44,7 @@ import (
 //}
 
 type Controller struct {
-	*service
+	service Service
 }
 
 func NewController() *Controller {
@@ -61,7 +61,8 @@ func (ctl *Controller) LoginHandler(c *gin.Context) {
 	//fmt.Println(form)
 	rs, err := ctl.service.Login(form)
 	if err != nil {
-		shared.WriteError(c, 400, ctl.service.Error(err).Msg)
+		spErr := ctl.service.Error(err)
+		shared.WriteError(c, spErr.Code, spErr.Msg)
 		return
 	}
 	c.JSON(200, rs)

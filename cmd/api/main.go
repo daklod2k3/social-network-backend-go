@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"core/shared/config"
 	"fmt"
 	"log"
 	"net/http"
@@ -38,9 +37,6 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 }
 
 func main() {
-
-	// Read config file
-	fmt.Println(config.Config.GetString("database.connectionString"))
 
 	server := server.NewServer()
 

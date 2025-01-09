@@ -15,9 +15,8 @@ type UserRepo struct {
 }
 
 func NewRepo() *UserRepo {
-
 	return &UserRepo{
-		database.New().GetSchema().Collection("user"),
+		database.New().GetSchema().Collection("users"),
 	}
 }
 

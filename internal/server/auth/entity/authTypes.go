@@ -9,3 +9,7 @@ type Register struct {
 	Name string `json:"name" form:"name" binding:"required"`
 	LoginEmail
 }
+
+type SessionResponse struct {
+	Token string `json:"access_token"`
+}

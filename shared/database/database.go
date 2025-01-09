@@ -23,7 +23,7 @@ type service struct {
 }
 
 var (
-	connectString = config.Config.GetString("Port")
+	connectString = config.GetConfig().Database.ConnectString
 )
 
 func New() Service {
