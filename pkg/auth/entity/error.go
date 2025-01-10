@@ -11,9 +11,9 @@ type SupabaseError struct {
 	Msg       string `json:"msg"`
 }
 
-func Error(err error) SupabaseError {
+func Error(err string) SupabaseError {
 	var parse SupabaseError
-	e := utils.Deserialize(err.Error(), &parse)
+	e := utils.Deserialize(err, &parse)
 	if e != nil {
 		// supabase error convert
 		fmt.Println(e)

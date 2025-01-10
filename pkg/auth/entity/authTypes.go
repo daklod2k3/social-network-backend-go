@@ -5,7 +5,7 @@ type LoginEmail struct {
 	Password string `json:"password" binding:"required"`
 }
 
-type Register struct {
+type RegisterEmail struct {
 	Name string `json:"name" form:"name" binding:"required"`
 	LoginEmail
 }

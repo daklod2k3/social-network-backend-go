@@ -3,6 +3,7 @@ package auth
 import (
 	"auth/entity"
 	"context"
+	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
@@ -17,6 +18,7 @@ type service struct {
 
 type Service interface {
 	Login(form entity.LoginEmail) (*pb.AuthResponse, error)
+	Register(form entity.RegisterEmail) (*pb.AuthResponse, error)
 }
 
 var (
@@ -35,8 +37,18 @@ func NewService() *service {
 }
 
 func (s *service) Login(form entity.LoginEmail) (*pb.AuthResponse, error) {
-	defer s.CloseGRPC()
 	res, err := s.auth.Login(context.Background(), &pb.LoginEmail{
+		Email:    form.Email,
+		Password: form.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (s *service) Register(form entity.RegisterEmail) (*pb.AuthResponse, error) {
+	res, err := s.auth.Register(context.Background(), &pb.RegisterEmail{
 		Email:    form.Email,
 		Password: form.Password,
 	})
@@ -49,7 +61,7 @@ func (s *service) Login(form entity.LoginEmail) (*pb.AuthResponse, error) {
 func (s *service) CloseGRPC() {
 	err := s.client.Close()
 	if err != nil {
-		log.Fatalln("could not close grpc connection")
+		fmt.Println("could not close grpc connection")
 	}
 
 }

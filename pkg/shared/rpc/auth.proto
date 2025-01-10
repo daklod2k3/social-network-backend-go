@@ -5,6 +5,7 @@ option go_package = "pb/";
 service Auth {
 
   rpc Login (LoginEmail) returns (AuthResponse);
+  rpc Register (RegisterEmail) returns (AuthResponse);
 
 }
 
@@ -13,9 +14,13 @@ message LoginEmail {
   string Password = 2;
 }
 
+message RegisterEmail {
+  string Name = 1;
+  string Email = 2;
+  string Password = 3;
+}
+
 message AuthResponse {
   string AccessToken = 1;
   string Name = 2;
-  string Error = 3;
-
 }

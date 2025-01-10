@@ -2,8 +2,10 @@ package auth
 
 import (
 	"auth/entity"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	shared "shared/entity"
+	"strings"
 )
 
 //type Controller struct {
@@ -61,26 +63,39 @@ func (ctl *Controller) LoginHandler(c *gin.Context) {
 	//fmt.Println(form)
 	rs, err := ctl.service.Login(form)
 	if err != nil {
-		spErr := entity.Error(err)
-		shared.WriteError(c, spErr.Code, spErr.Msg)
+		ErrorHandler(c, err.Error())
 		return
 	}
 	c.JSON(200, rs)
 }
 
 func (ctl *Controller) RegisterHandler(c *gin.Context) {
-	//var form entity.Register
-	//if err := c.ShouldBindJSON(&form); err != nil {
-	//	c.AbortWithError(400, err)
-	//}
-	////fmt.Println(form)
-	//rs, err := ctl.service.Register(form)
-	//if err != nil {
-	//	shared.WriteError(c, 400, ctl.service.Error(err).Msg)
-	//	return
-	//}
-	c.JSON(200, gin.H{})
+	var form entity.RegisterEmail
+	if err := c.ShouldBindJSON(&form); err != nil {
+		c.AbortWithError(400, err)
+	}
+	//fmt.Println(form)
+	rs, err := ctl.service.Register(form)
+	if err != nil {
+		ErrorHandler(c, err.Error())
+		return
+	}
+	c.JSON(200, rs)
 }
 
 func (ctl *Controller) GetSessionHandler(c *gin.Context) {
+}
+
+func ErrorHandler(c *gin.Context, err string) {
+	//fmt.Println(err)
+	switch {
+	case strings.IndexAny(err, "code = Unknown") == -1 && strings.IndexAny(err, "code = Unavailable") > -1:
+		fmt.Println(err)
+		shared.WriteError(c, 500, "fail to connect auth service")
+
+	default:
+		//fmt.Println("spErr")
+		spErr := entity.Error(err)
+		shared.WriteError(c, spErr.Code, spErr.Msg)
+	}
 }
