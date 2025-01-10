@@ -2,8 +2,8 @@ package server
 
 import (
 	"core/internal/server/auth"
-	"core/internal/shared/database"
 	"net/http"
+	"shared/database"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

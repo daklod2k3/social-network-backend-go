@@ -5,26 +5,27 @@ import (
 	"fmt"
 	"github.com/supabase-community/gotrue-go/types"
 	"github.com/supabase-community/supabase-go"
+	"golang.org/x/net/context"
 	"shared/config"
-	"shared/utils"
+	"shared/rpc/pb"
 )
 
-type service struct {
+type Service struct {
 	supabase *supabase.Client
 	user     *entity.UserRepo
+	pb.UnimplementedAuthServer
 }
 
-type Service interface {
-	Login(form entity.LoginEmail) (*types.TokenResponse, error)
-	Register(form entity.Register) (*types.SignupResponse, error)
-	GetSession()
-	Error(err error) entity.SupabaseError
+type service interface {
+	Login(form pb.LoginEmail) pb.AuthResponse
+	//Register(form pb.LoginEmail) pb.AuthResponse
+	//GetSession()
 }
 
-func NewService() Service {
+func NewService() *Service {
 
 	// init supabase supabase
-	s := &service{}
+	s := &Service{}
 	sp := config.GetConfig().Supabase
 	client, err := supabase.NewClient(sp.Url, sp.Key, &supabase.ClientOptions{})
 	if err != nil {
@@ -37,15 +38,21 @@ func NewService() Service {
 	return s
 }
 
-func (s *service) GetSession() {
+func (s *Service) GetSession() {
 
 }
 
-func (s *service) Login(form entity.LoginEmail) (*types.TokenResponse, error) {
-	return s.supabase.Auth.SignInWithEmailPassword(form.Email, form.Password)
+func (s *Service) Login(_ context.Context, form *pb.LoginEmail) (*pb.AuthResponse, error) {
+	res, err := s.supabase.Auth.SignInWithEmailPassword(form.Email, form.Password)
+	if err != nil {
+		return &pb.AuthResponse{}, err
+	}
+	return &pb.AuthResponse{
+		AccessToken: res.AccessToken,
+	}, err
 }
 
-func (s *service) Register(form entity.Register) (*types.SignupResponse, error) {
+func (s *Service) Register(form entity.Register) (*types.SignupResponse, error) {
 	auth, err := s.supabase.Auth.Signup(types.SignupRequest{
 		Email:    form.Email,
 		Password: form.Password,

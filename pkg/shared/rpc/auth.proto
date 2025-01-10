@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "pb/";
+
+service Auth {
+
+  rpc Login (LoginEmail) returns (AuthResponse);
+
+}
+
+message LoginEmail {
+  string Email = 1;
+  string Password = 2;
+}
+
+message AuthResponse {
+  string AccessToken = 1;
+  string Name = 2;
+  string Error = 3;
+
+}

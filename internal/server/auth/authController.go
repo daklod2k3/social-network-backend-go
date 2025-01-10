@@ -2,7 +2,6 @@ package auth
 
 import (
 	"auth/entity"
-
 	"github.com/gin-gonic/gin"
 	shared "shared/entity"
 )

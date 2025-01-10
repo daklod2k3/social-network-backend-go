@@ -8,7 +8,11 @@ import (
 type Configuration struct {
 	Port     int
 	Database struct {
-		ConnectString string `mapstructure:"ConnectString"`
+		ConnectString string
+	}
+	Auth struct {
+		Url  string
+		Port string
 	}
 	Supabase struct {
 		Url string
@@ -18,8 +22,8 @@ type Configuration struct {
 
 func GetConfig() *Configuration {
 	fmt.Println("init config")
-	viper.SetConfigName("config")        // name of config file (without extension)
-	viper.AddConfigPath("shared/config") // path to look for the config file in
+	viper.SetConfigName("config") // name of config file (without extension)
+	viper.AddConfigPath("config") // path to look for the config file in
 	// Find and read the config file
 	if err := viper.ReadInConfig(); err != nil { // Handle errors reading the config file
 		panic(fmt.Errorf("fatal error config file: %w", err))
