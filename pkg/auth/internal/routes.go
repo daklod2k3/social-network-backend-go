@@ -1,19 +1,20 @@
-package server
+package internal
 
 import (
+	"auth/internal/auth"
+	"auth/internal/profile"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"shared/database"
 	"shared/route"
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
-
 	r := gin.Default()
 
 	defaultGroup := route.DefaultRouteConfig(r)
 
-	database.ApplyRoute(defaultGroup)
+	auth.NewController().ApplyRoute(defaultGroup)
+	profile.NewController().ApplyRoute(defaultGroup)
 
 	return r
 }

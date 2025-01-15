@@ -3,7 +3,6 @@ package auth
 import (
 	"auth/entity"
 	"github.com/gin-gonic/gin"
-	shared "shared/entity"
 )
 
 //type Controller struct {
@@ -54,33 +53,55 @@ func NewController() *Controller {
 }
 
 func (ctl *Controller) LoginHandler(c *gin.Context) {
-	var form entity.LoginEmail
+	var form entity.LoginMail
 	if err := c.ShouldBindJSON(&form); err != nil {
 		c.AbortWithError(400, err)
 	}
 	//fmt.Println(form)
-	rs, err := ctl.service.Login(form)
+	rs, err := ctl.service.Login(&form)
 	if err != nil {
-		spErr := entity.Error(err)
-		shared.WriteError(c, spErr.Code, spErr.Msg)
+		entity.ParseError(err).WriteError(c)
 		return
 	}
 	c.JSON(200, rs)
 }
 
 func (ctl *Controller) RegisterHandler(c *gin.Context) {
-	//var form entity.Register
-	//if err := c.ShouldBindJSON(&form); err != nil {
-	//	c.AbortWithError(400, err)
-	//}
-	////fmt.Println(form)
-	//rs, err := ctl.service.Register(form)
-	//if err != nil {
-	//	shared.WriteError(c, 400, ctl.service.Error(err).Msg)
-	//	return
-	//}
-	c.JSON(200, gin.H{})
+	var form entity.RegisterMail
+	if err := c.ShouldBindJSON(&form); err != nil {
+		c.AbortWithError(400, err)
+	}
+	//fmt.Println(form)
+	rs, err := ctl.service.Register(&form)
+	if err != nil {
+		entity.ParseError(err).WriteError(c)
+		return
+	}
+
+	c.JSON(200, rs)
+}
+
+func (ctl *Controller) Health(c *gin.Context) {
+	res, err := ctl.service.Health()
+	if err != nil {
+		entity.ParseError(err).WriteError(c)
+	}
+	c.JSON(200, res)
 }
 
 func (ctl *Controller) GetSessionHandler(c *gin.Context) {
+
+	var body entity.SessionRequest
+	if err := c.ShouldBindJSON(&body); err != nil {
+		entity.ParseError(err).WriteError(c)
+	}
+
+	session, err := ctl.service.GetSession(&body)
+	if err != nil {
+		entity.ParseError(err).WriteError(c)
+		return
+	}
+
+	c.JSON(200, session)
+
 }

@@ -12,10 +12,14 @@ type Configuration struct {
 	}
 	Auth struct {
 		Url  string
-		Port string
+		Port int
+		Grpc struct {
+			Port int
+		}
 	}
 	Supabase struct {
 		Url string
+		Ref string
 		Key string
 	}
 }

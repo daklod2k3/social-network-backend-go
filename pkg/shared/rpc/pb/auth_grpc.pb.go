@@ -19,14 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Auth_Login_FullMethodName = "/Auth/Login"
+	Auth_GetSession_FullMethodName = "/Auth/GetSession"
 )
 
 // AuthClient is the client API for Auth service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
-	Login(ctx context.Context, in *LoginEmail, opts ...grpc.CallOption) (*AuthResponse, error)
+	// rpc Health(Empty) returns (HealthRes);
+	// rpc Login (LoginEmail) returns (AuthResponse);
+	// rpc Register (RegisterEmail) returns (AuthResponse);
+	GetSession(ctx context.Context, in *SessionReq, opts ...grpc.CallOption) (*AuthResponse, error)
 }
 
 type authClient struct {
@@ -37,10 +40,10 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
 }
 
-func (c *authClient) Login(ctx context.Context, in *LoginEmail, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *authClient) GetSession(ctx context.Context, in *SessionReq, opts ...grpc.CallOption) (*AuthResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AuthResponse)
-	err := c.cc.Invoke(ctx, Auth_Login_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Auth_GetSession_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +54,10 @@ func (c *authClient) Login(ctx context.Context, in *LoginEmail, opts ...grpc.Cal
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility.
 type AuthServer interface {
-	Login(context.Context, *LoginEmail) (*AuthResponse, error)
+	// rpc Health(Empty) returns (HealthRes);
+	// rpc Login (LoginEmail) returns (AuthResponse);
+	// rpc Register (RegisterEmail) returns (AuthResponse);
+	GetSession(context.Context, *SessionReq) (*AuthResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -62,8 +68,8 @@ type AuthServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAuthServer struct{}
 
-func (UnimplementedAuthServer) Login(context.Context, *LoginEmail) (*AuthResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+func (UnimplementedAuthServer) GetSession(context.Context, *SessionReq) (*AuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSession not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
 func (UnimplementedAuthServer) testEmbeddedByValue()              {}
@@ -86,20 +92,20 @@ func RegisterAuthServer(s grpc.ServiceRegistrar, srv AuthServer) {
 	s.RegisterService(&Auth_ServiceDesc, srv)
 }
 
-func _Auth_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginEmail)
+func _Auth_GetSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SessionReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).Login(ctx, in)
+		return srv.(AuthServer).GetSession(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Auth_Login_FullMethodName,
+		FullMethod: Auth_GetSession_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).Login(ctx, req.(*LoginEmail))
+		return srv.(AuthServer).GetSession(ctx, req.(*SessionReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,8 +118,8 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Login",
-			Handler:    _Auth_Login_Handler,
+			MethodName: "GetSession",
+			Handler:    _Auth_GetSession_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

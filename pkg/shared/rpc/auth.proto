@@ -4,30 +4,39 @@ option go_package = "pb/";
 
 service Auth {
 
-  rpc Login (LoginEmail) returns (AuthResponse);
-  rpc Register (RegisterEmail) returns (AuthResponse);
+//  rpc Health(Empty) returns (HealthRes);
+//  rpc Login (LoginEmail) returns (AuthResponse);
+//  rpc Register (RegisterEmail) returns (AuthResponse);
   rpc GetSession (SessionReq) returns (AuthResponse);
 
 }
 
-message SessionReq {
-  string AccessToken = 1;
-  string RefreshToken = 2;
-}
-
-message LoginEmail {
-  string Email = 1;
-  string Password = 2;
-}
-
-message RegisterEmail {
-  string Name = 1;
-  string Email = 2;
-  string Password = 3;
-}
+//message Empty {
+//
+//}
+//
+//message HealthRes {
+//  string message = 1;
+//}
+//
+//message LoginEmail {
+//  string Email = 1;
+//  string Password = 2;
+//}
+//
+//message RegisterEmail {
+//  string Name = 1;
+//  string Email = 2;
+//  string Password = 3;
+//}
 
 message AuthResponse {
   string AccessToken = 1;
   string RefreshToken = 2;
   string Name = 3;
+}
+
+message SessionReq {
+  string AccessToken = 1;
+  string RefreshToken = 2;
 }

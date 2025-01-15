@@ -1,20 +1,27 @@
 package entity
 
-type LoginEmail struct {
+import "shared/entity"
+
+type LoginMail struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
-type Register struct {
-	Name string `json:"name" form:"name" binding:"required"`
-	LoginEmail
-}
-
-type SessionResponse struct {
-	Token string `json:"access_token"`
+type RegisterMail struct {
+	LoginMail
 }
 
 type AuthResponse struct {
-	AccessToken string `json:"access_token"`
-	Name        string `json:"name"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token,omitempty"`
+	*entity.User `json:"user,omitempty"`
+}
+
+type SessionRequest struct {
+	AccessToken  string `json:"access_token,required"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+type HealthResponse struct {
+	Message string `json:"message"`
 }

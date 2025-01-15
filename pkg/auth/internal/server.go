@@ -1,30 +1,20 @@
-package server
+package internal
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
-	"go.uber.org/zap"
 	"net/http"
-	"shared/database"
-	"shared/logger"
-
+	"shared/config"
 	"time"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
 type Server struct {
-	port   int
-	db     database.Service
-	Logger *zap.Logger
+	port int
 }
 
 func NewServer() *http.Server {
-	port := viper.GetInt("port")
+	port := config.GetConfig().Auth.Port
 	NewServer := &Server{
-		port:   port,
-		Logger: logger.GetLogger(),
-		db:     database.New(),
+		port: port,
 	}
 
 	// Declare Server config

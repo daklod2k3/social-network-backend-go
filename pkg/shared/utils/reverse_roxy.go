@@ -40,7 +40,7 @@ func ReverseProxy(c *gin.Context, reversePath string, method string) {
 	//}
 	//resp, err := transport.RoundTrip(req)
 	//if err != nil {
-	//	log.Printf("error in roundtrip: %v", err)
+	//	logger.Printf("error in roundtrip: %v", err)
 	//	c.String(500, "error")
 	//	return
 	//}
