@@ -7,13 +7,12 @@ import (
 
 // User represents the Users collection
 type User struct {
-	ID            primitive.ObjectID   `bson:"_id,omitempty" json:"id"`
-	DisplayName   string               `bson:"display_name" json:"display_name"`
-	AvatarPath    string               `bson:"avt_path" json:"avt_path"`
-	Status        string               `bson:"status" json:"status"`
-	Friends       []primitive.ObjectID `bson:"friends" json:"friends"`
-	TotalFollower int                  `bson:"total_follower" json:"total_follower"`
-	UserId        uuid.UUID            `bson:"user_id" json:"user_id"`
+	ID            primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	DisplayName   string             `bson:"display_name" json:"display_name"`
+	AvatarPath    string             `bson:"avt_path" json:"avt_path"`
+	Status        string             `bson:"status" json:"status"`
+	TotalFollower int                `bson:"total_follower" json:"total_follower"`
+	UserId        uuid.UUID          `bson:"user_id" json:"user_id"`
 }
 
 // Follow represents the Follows collection

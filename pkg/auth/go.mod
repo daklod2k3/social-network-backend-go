@@ -5,7 +5,7 @@ go 1.23.4
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.6.0
-	github.com/supabase-community/gotrue-go v1.2.1
+	github.com/supabase-community/auth-go v1.3.2
 	github.com/supabase-community/supabase-go v0.0.4
 	go.mongodb.org/mongo-driver v1.17.2
 	google.golang.org/grpc v1.69.2

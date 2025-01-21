@@ -2,28 +2,24 @@ package entity
 
 import "github.com/gin-gonic/gin"
 
-type Response struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
+type ResponseJson struct {
+	Status  int         `json:"status"`
+	Error   string      `json:"error,omitempty"`
+	Message string      `json:"message,omitempty"`
+	Data    interface{} `json:"data,omitempty"`
 }
 
-func WriteError(c *gin.Context, status int, message string) {
-	if status == 0 {
-		status = 500
+func (res ResponseJson) WriteError(c *gin.Context) {
+	if res.Status == 0 {
+		res.Status = 500
 	}
 
-	c.AbortWithStatusJSON(status, Response{
-		status,
-		message,
-	})
+	c.AbortWithStatusJSON(res.Status, res)
 }
 
-func WriteSuccess(c *gin.Context, status int, message string) {
-	if status == 0 {
-		status = 200
+func (res ResponseJson) WriteSuccess(c *gin.Context) {
+	if res.Status == 0 {
+		res.Status = 200
 	}
-	c.AbortWithStatusJSON(status, Response{
-		status,
-		message,
-	})
+	c.AbortWithStatusJSON(res.Status, res)
 }

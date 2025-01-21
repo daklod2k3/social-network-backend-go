@@ -1,17 +1,11 @@
-package server
+package route
 
 import (
-	"core/internal/server/auth"
-	"net/http"
-	"shared/database"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func (s *Server) RegisterRoutes() http.Handler {
-	r := gin.Default()
-
+func DefaultRouteConfig(r *gin.Engine) *gin.RouterGroup {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"}, // Add your frontend URL
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
@@ -19,10 +13,5 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowCredentials: true, // Enable cookies/auth
 	}))
 
-	defaultGroup := r.Group("api/v1")
-
-	auth.ApplyRoute(defaultGroup)
-	database.ApplyRoute(defaultGroup)
-
-	return r
+	return r.Group("api/v1")
 }

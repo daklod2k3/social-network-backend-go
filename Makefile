@@ -1,11 +1,7 @@
 # Simple Makefile for a Go project
 
-# start
-dev: auth watch
-
-
-auth:
-	@cd pkg/auth/ &&  @make dev
+# Build the application
+all: build test
 
 build:
 	@echo "Building..."

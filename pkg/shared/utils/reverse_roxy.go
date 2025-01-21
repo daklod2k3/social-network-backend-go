@@ -19,8 +19,8 @@ func ReverseProxy(c *gin.Context, reversePath string, method string) {
 
 	target, err := url.Parse(reversePath)
 	if err != nil {
-		log.Printf("error in parse addr: %v", err)
-		c.String(500, "error")
+		log.Printf("auth in parse addr: %v", err)
+		c.String(500, "auth")
 		return
 	}
 	//req.URL.Scheme = proxy.Scheme
@@ -40,8 +40,8 @@ func ReverseProxy(c *gin.Context, reversePath string, method string) {
 	//}
 	//resp, err := transport.RoundTrip(req)
 	//if err != nil {
-	//	log.Printf("error in roundtrip: %v", err)
-	//	c.String(500, "error")
+	//	logger.Printf("auth in roundtrip: %v", err)
+	//	c.String(500, "auth")
 	//	return
 	//}
 	//

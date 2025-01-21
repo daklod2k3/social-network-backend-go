@@ -2,10 +2,10 @@ package auth
 
 import (
 	"auth/entity"
-	"fmt"
+	authUtils "auth/utils"
 	"github.com/gin-gonic/gin"
-	shared "shared/entity"
-	"strings"
+	authEntity "shared/entity/auth"
+	"shared/interfaces"
 )
 
 //type Controller struct {
@@ -46,7 +46,7 @@ import (
 //}
 
 type Controller struct {
-	service Service
+	service interfaces.AuthService
 }
 
 func NewController() *Controller {
@@ -56,46 +56,53 @@ func NewController() *Controller {
 }
 
 func (ctl *Controller) LoginHandler(c *gin.Context) {
-	var form entity.LoginEmail
+	var form entity.LoginMail
 	if err := c.ShouldBindJSON(&form); err != nil {
 		c.AbortWithError(400, err)
 	}
 	//fmt.Println(form)
-	rs, err := ctl.service.Login(form)
+	rs, err := ctl.service.Login(&form)
 	if err != nil {
-		ErrorHandler(c, err.Error())
+		authEntity.ParseError(err, -1).WriteError(c)
 		return
 	}
 	c.JSON(200, rs)
 }
 
 func (ctl *Controller) RegisterHandler(c *gin.Context) {
-	var form entity.RegisterEmail
+	var form entity.RegisterMail
 	if err := c.ShouldBindJSON(&form); err != nil {
 		c.AbortWithError(400, err)
 	}
 	//fmt.Println(form)
-	rs, err := ctl.service.Register(form)
+	rs, err := ctl.service.Register(&form)
 	if err != nil {
-		ErrorHandler(c, err.Error())
+		authEntity.ParseError(err, -1).WriteError(c)
 		return
 	}
+
 	c.JSON(200, rs)
 }
 
-func (ctl *Controller) GetSessionHandler(c *gin.Context) {
+func (ctl *Controller) Health(c *gin.Context) {
+	res, err := ctl.service.Health()
+	if err != nil {
+		authEntity.ParseError(err, -1).WriteError(c)
+	}
+	c.JSON(200, res)
 }
 
-func ErrorHandler(c *gin.Context, err string) {
-	//fmt.Println(err)
-	switch {
-	case strings.IndexAny(err, "code = Unknown") == -1 && strings.IndexAny(err, "code = Unavailable") > -1:
-		fmt.Println(err)
-		shared.WriteError(c, 500, "fail to connect auth service")
+func (ctl *Controller) GetSessionHandler(c *gin.Context) {
+	//sessionStr := c.GetString("session")
+	//if sessionStr == "" {
+	//	c.AbortWithStatus(401)
+	//	return
+	//}
+	//
+	//var session authEntity.AuthResponse
+	//utils.Deserialize(sessionStr, &session)
+	session := authUtils.GetSessionFromContext(c)
 
-	default:
-		//fmt.Println("spErr")
-		spErr := entity.Error(err)
-		shared.WriteError(c, spErr.Code, spErr.Msg)
-	}
+	c.JSON(200, session)
+
 }

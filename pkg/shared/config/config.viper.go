@@ -12,10 +12,14 @@ type Configuration struct {
 	}
 	Auth struct {
 		Url  string
-		Port string
+		Port int
+		Grpc struct {
+			Port int
+		}
 	}
 	Supabase struct {
 		Url string
+		Ref string
 		Key string
 	}
 }
@@ -26,11 +30,11 @@ func GetConfig() *Configuration {
 	viper.AddConfigPath("config") // path to look for the config file in
 	// Find and read the config file
 	if err := viper.ReadInConfig(); err != nil { // Handle errors reading the config file
-		panic(fmt.Errorf("fatal error config file: %w", err))
+		panic(fmt.Errorf("fatal auth config file: %w", err))
 	}
 	var config Configuration
 	if err := viper.Unmarshal(&config); err != nil {
-		panic(fmt.Errorf("parse config file error: %w", err))
+		panic(fmt.Errorf("parse config file auth: %w", err))
 	}
 	return &config
 }

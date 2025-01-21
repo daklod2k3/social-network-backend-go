@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// trim string before deserialize
+// trim string and deserialize
 func Deserialize(s string, rs any) error {
 	s = trim(s)
 	return json.Unmarshal([]byte(s), &rs)
