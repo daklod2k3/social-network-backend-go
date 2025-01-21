@@ -5,6 +5,7 @@ import (
 	"auth/internal/profile"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"shared/middlewares"
 	"shared/route"
 )
 
@@ -13,8 +14,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	defaultGroup := route.DefaultRouteConfig(r)
 
-	auth.NewController().ApplyRoute(defaultGroup)
-	profile.NewController().ApplyRoute(defaultGroup)
+	authorizedGroup := defaultGroup.Group("/")
+
+	authorizedGroup.Use(middlewares.AuthMiddleware(s.AuthService))
+
+	auth.NewController().ApplyRoute(defaultGroup, authorizedGroup)
+	profile.NewController().ApplyRoute(authorizedGroup, authorizedGroup)
 
 	return r
 }

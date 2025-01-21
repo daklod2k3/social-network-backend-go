@@ -2,7 +2,10 @@ package auth
 
 import (
 	"auth/entity"
+	authUtils "auth/utils"
 	"github.com/gin-gonic/gin"
+	authEntity "shared/entity/auth"
+	"shared/interfaces"
 )
 
 //type Controller struct {
@@ -43,7 +46,7 @@ import (
 //}
 
 type Controller struct {
-	service Service
+	service interfaces.AuthService
 }
 
 func NewController() *Controller {
@@ -60,7 +63,7 @@ func (ctl *Controller) LoginHandler(c *gin.Context) {
 	//fmt.Println(form)
 	rs, err := ctl.service.Login(&form)
 	if err != nil {
-		entity.ParseError(err).WriteError(c)
+		authEntity.ParseError(err, -1).WriteError(c)
 		return
 	}
 	c.JSON(200, rs)
@@ -74,7 +77,7 @@ func (ctl *Controller) RegisterHandler(c *gin.Context) {
 	//fmt.Println(form)
 	rs, err := ctl.service.Register(&form)
 	if err != nil {
-		entity.ParseError(err).WriteError(c)
+		authEntity.ParseError(err, -1).WriteError(c)
 		return
 	}
 
@@ -84,23 +87,21 @@ func (ctl *Controller) RegisterHandler(c *gin.Context) {
 func (ctl *Controller) Health(c *gin.Context) {
 	res, err := ctl.service.Health()
 	if err != nil {
-		entity.ParseError(err).WriteError(c)
+		authEntity.ParseError(err, -1).WriteError(c)
 	}
 	c.JSON(200, res)
 }
 
 func (ctl *Controller) GetSessionHandler(c *gin.Context) {
-
-	var body entity.SessionRequest
-	if err := c.ShouldBindJSON(&body); err != nil {
-		entity.ParseError(err).WriteError(c)
-	}
-
-	session, err := ctl.service.GetSession(&body)
-	if err != nil {
-		entity.ParseError(err).WriteError(c)
-		return
-	}
+	//sessionStr := c.GetString("session")
+	//if sessionStr == "" {
+	//	c.AbortWithStatus(401)
+	//	return
+	//}
+	//
+	//var session authEntity.AuthResponse
+	//utils.Deserialize(sessionStr, &session)
+	session := authUtils.GetSessionFromContext(c)
 
 	c.JSON(200, session)
 

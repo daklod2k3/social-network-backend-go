@@ -26,9 +26,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
-	// rpc Health(Empty) returns (HealthRes);
-	// rpc Login (LoginEmail) returns (AuthResponse);
-	// rpc Register (RegisterEmail) returns (AuthResponse);
+	//  rpc Health(Empty) returns (HealthRes);
+	//  rpc Login (LoginEmail) returns (AuthResponse);
+	//  rpc Register (RegisterEmail) returns (AuthResponse);
 	GetSession(ctx context.Context, in *SessionReq, opts ...grpc.CallOption) (*AuthResponse, error)
 }
 
@@ -54,9 +54,9 @@ func (c *authClient) GetSession(ctx context.Context, in *SessionReq, opts ...grp
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility.
 type AuthServer interface {
-	// rpc Health(Empty) returns (HealthRes);
-	// rpc Login (LoginEmail) returns (AuthResponse);
-	// rpc Register (RegisterEmail) returns (AuthResponse);
+	//  rpc Health(Empty) returns (HealthRes);
+	//  rpc Login (LoginEmail) returns (AuthResponse);
+	//  rpc Register (RegisterEmail) returns (AuthResponse);
 	GetSession(context.Context, *SessionReq) (*AuthResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }

@@ -2,7 +2,6 @@ package entity
 
 import (
 	"context"
-	"errors"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -49,7 +48,7 @@ func (db *UserRepoRead) FindUser(id *uuid.UUID) (*User, error) {
 	return &user, nil
 }
 
-func (db *UserRepo) CreateUser(id *uuid.UUID, name *string) (*User, error) {
+func (db *UserRepo) CreateUser(id *uuid.UUID, name *string, avaPath *string) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
@@ -64,13 +63,14 @@ func (db *UserRepo) CreateUser(id *uuid.UUID, name *string) (*User, error) {
 	return &doc, nil
 }
 
-func (db *UserRepo) FindOrCreateUser(id *uuid.UUID, name *string) (*User, error) {
-	var user, err = db.read.FindUser(id)
-	switch {
-	case errors.Is(err, mongo.ErrNoDocuments):
-		return db.CreateUser(id, name)
-	case err != nil:
-		return nil, err
-	}
-	return user, nil
-}
+//
+//func (db *UserRepo) FindOrCreateUser(id *uuid.UUID, name *string) (*User, error) {
+//	var user, err = db.read.FindUser(id)
+//	switch {
+//	case errors.Is(err, mongo.ErrNoDocuments):
+//		return db.CreateUser(id, name, "")
+//	case err != nil:
+//		return nil, err
+//	}
+//	return user, nil
+//}

@@ -9,21 +9,20 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"shared/config"
+	authEntity "shared/entity/auth"
+	logger2 "shared/logger"
 
 	sharedEntity "shared/entity"
+)
+
+var (
+	logger = logger2.GetLogger()
 )
 
 type service struct {
 	goTrue gotrue.Client
 	user   *sharedEntity.UserRepoRead
 	*sharedEntity.Service
-}
-
-type Service interface {
-	Health() (*entity.HealthResponse, error)
-	Login(form *entity.LoginMail) (*entity.AuthResponse, error)
-	Register(form *entity.RegisterMail) (*entity.AuthResponse, error)
-	GetSession(form *entity.SessionRequest) (*entity.AuthResponse, error)
 }
 
 func NewService() *service {
@@ -46,32 +45,37 @@ func NewService() *service {
 	return s
 }
 
-func (s *service) Health() (*entity.HealthResponse, error) {
+func (s *service) Health() (*authEntity.HealthResponse, error) {
 	_, err := s.goTrue.HealthCheck()
 	if err != nil {
 		return nil, s.Error(err)
 	}
 
-	return &entity.HealthResponse{
+	return &authEntity.HealthResponse{
 		Message: "ok",
 	}, nil
 }
 
-func (s *service) GetSession(form *entity.SessionRequest) (*entity.AuthResponse, error) {
+func (s *service) GetSession(form *authEntity.SessionRequest) (*authEntity.AuthResponse, error) {
+
 	cl := s.goTrue.WithToken(form.AccessToken)
 
 	var (
-		response = entity.AuthResponse{
+		response = authEntity.AuthResponse{
 			form.AccessToken,
 			form.RefreshToken,
+			nil,
 			nil,
 		}
 		user *types.User
 	)
 
+	logger.Info("Session: " + form.AccessToken + form.RefreshToken)
+
 	res, err := cl.GetUser()
 
 	if err != nil {
+		logger.Error(err.Error())
 		if form.RefreshToken == "" {
 			return nil, s.Error(errors.New("invalid refresh token"))
 		}
@@ -82,8 +86,10 @@ func (s *service) GetSession(form *entity.SessionRequest) (*entity.AuthResponse,
 		response.AccessToken = tokenRes.AccessToken
 		user = &tokenRes.User
 		response.RefreshToken = tokenRes.RefreshToken
+		response.UserId = &tokenRes.User.ID
 	} else {
 		user = &res.User
+		response.UserId = &res.User.ID
 	}
 
 	if user == nil {
@@ -94,7 +100,7 @@ func (s *service) GetSession(form *entity.SessionRequest) (*entity.AuthResponse,
 	return &response, nil
 }
 
-func (s *service) Login(form *entity.LoginMail) (*entity.AuthResponse, error) {
+func (s *service) Login(form *entity.LoginMail) (*authEntity.AuthResponse, error) {
 	res, err := s.goTrue.SignInWithEmailPassword(form.Email, form.Password)
 	if err != nil {
 		return nil, s.Error(err)
@@ -105,14 +111,15 @@ func (s *service) Login(form *entity.LoginMail) (*entity.AuthResponse, error) {
 			return nil, s.Error(err)
 		}
 	}
-	return &entity.AuthResponse{
+	return &authEntity.AuthResponse{
 		AccessToken:  res.AccessToken,
 		RefreshToken: res.RefreshToken,
 		User:         user,
+		UserId:       &res.User.ID,
 	}, nil
 }
 
-func (s *service) Register(form *entity.RegisterMail) (*entity.AuthResponse, error) {
+func (s *service) Register(form *entity.RegisterMail) (*authEntity.AuthResponse, error) {
 	auth, err := s.goTrue.Signup(types.SignupRequest{
 		Email:    form.Email,
 		Password: form.Password,
@@ -121,9 +128,10 @@ func (s *service) Register(form *entity.RegisterMail) (*entity.AuthResponse, err
 		return nil, s.Error(err)
 	}
 
-	return &entity.AuthResponse{
+	return &authEntity.AuthResponse{
 		AccessToken:  auth.AccessToken,
 		RefreshToken: auth.RefreshToken,
+		UserId:       &auth.User.ID,
 	}, nil
 
 }

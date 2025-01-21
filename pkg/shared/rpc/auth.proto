@@ -33,7 +33,16 @@ service Auth {
 message AuthResponse {
   string AccessToken = 1;
   string RefreshToken = 2;
-  string Name = 3;
+  string UserId = 3;
+  User User = 4;
+}
+
+message User {
+  string Id = 1;
+  string DisplayName = 2;
+  string AvatarPath = 3;
+  string Status = 4;
+  string UserId = 5;
 }
 
 message SessionReq {
