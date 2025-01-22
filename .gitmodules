@@ -1,3 +1,8 @@
 [submodule "pkg/auth"]
 	path = pkg/auth
 	url = https://github.com/daklod2k3/social-auth-serivce.git
+	branch = main
+[submodule "pkg/post"]
+	path = pkg/post
+	url = https://github.com/daklod2k3/social-post-service.git
+	branch = main

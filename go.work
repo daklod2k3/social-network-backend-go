@@ -4,5 +4,5 @@ use (
 	.
 	"pkg/shared"
 	"pkg/auth"
-
+	"pkg/post"
 )
