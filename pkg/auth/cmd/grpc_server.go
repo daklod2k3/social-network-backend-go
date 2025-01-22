@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"auth/internal/auth"
+	"auth/internal/global"
 	"context"
 	"fmt"
 	"log"
 	"net"
-	"shared/config"
 	authEntity "shared/entity/auth"
 	"shared/interfaces"
 	"shared/rpc/pb"
@@ -14,9 +14,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-var (
-	grpcPort = config.GetConfig().Auth.Grpc.Port
-)
+var ()
 
 type server struct {
 	pb.UnimplementedAuthServer
@@ -24,6 +22,7 @@ type server struct {
 }
 
 func StartGRPCServer() {
+	grpcPort := global.Config.Auth.Grpc.Port
 	lis, err := net.Listen("tcp", ":"+fmt.Sprint(grpcPort))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

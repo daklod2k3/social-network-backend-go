@@ -7,9 +7,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"shared/config"
 	"shared/entity"
 	authEntity "shared/entity/auth"
+	"shared/global"
 	"shared/rpc/pb"
 )
 
@@ -22,7 +22,7 @@ type AuthRpcService interface {
 }
 
 func NewClient() *authRpc {
-	var cfg = config.GetConfig()
+	var cfg = global.Config
 	var (
 		url = cfg.Auth.Url
 	)

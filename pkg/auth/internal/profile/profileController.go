@@ -1,18 +1,18 @@
 package profile
 
 import (
-	authUtils "auth/utils"
+	"auth/internal/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"shared/database"
 	"shared/entity"
 	authEntity "shared/entity/auth"
-	logger2 "shared/logger"
+	"shared/global"
 )
 
 var (
-	logger = logger2.GetLogger()
+	logger = global.Logger
 )
 
 type controller struct {

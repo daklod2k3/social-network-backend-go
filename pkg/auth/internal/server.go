@@ -2,9 +2,9 @@ package internal
 
 import (
 	"auth/internal/auth"
+	"auth/internal/global"
 	"fmt"
 	"net/http"
-	"shared/config"
 	"shared/interfaces"
 	"time"
 )
@@ -15,7 +15,7 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
-	port := config.GetConfig().Auth.Port
+	port := global.Config.Port
 	NewServer := &Server{
 		port:        port,
 		AuthService: auth.NewService(),

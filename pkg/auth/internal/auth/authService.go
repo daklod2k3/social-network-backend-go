@@ -1,22 +1,20 @@
 package auth
 
 import (
-	"auth/entity"
 	"errors"
 	gotrue "github.com/supabase-community/auth-go"
 	"github.com/supabase-community/auth-go/types"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"shared/config"
 	authEntity "shared/entity/auth"
-	logger2 "shared/logger"
+	"shared/global"
 
 	sharedEntity "shared/entity"
 )
 
 var (
-	logger = logger2.GetLogger()
+	logger = global.Logger
 )
 
 type service struct {
@@ -31,7 +29,7 @@ func NewService() *service {
 	s := &service{}
 	s.Service = sharedEntity.NewService()
 
-	sp := config.GetConfig().Supabase
+	sp := global.Config.Supabase
 	client := gotrue.New(sp.Ref, sp.Key)
 	_, err := client.GetSettings()
 	if err != nil {
@@ -100,7 +98,7 @@ func (s *service) GetSession(form *authEntity.SessionRequest) (*authEntity.AuthR
 	return &response, nil
 }
 
-func (s *service) Login(form *entity.LoginMail) (*authEntity.AuthResponse, error) {
+func (s *service) Login(form *authEntity.LoginMail) (*authEntity.AuthResponse, error) {
 	res, err := s.goTrue.SignInWithEmailPassword(form.Email, form.Password)
 	if err != nil {
 		return nil, s.Error(err)
@@ -119,7 +117,7 @@ func (s *service) Login(form *entity.LoginMail) (*authEntity.AuthResponse, error
 	}, nil
 }
 
-func (s *service) Register(form *entity.RegisterMail) (*authEntity.AuthResponse, error) {
+func (s *service) Register(form *authEntity.RegisterMail) (*authEntity.AuthResponse, error) {
 	auth, err := s.goTrue.Signup(types.SignupRequest{
 		Email:    form.Email,
 		Password: form.Password,

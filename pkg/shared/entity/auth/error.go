@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 	"net/http"
 	"shared/entity"
-	logger2 "shared/logger"
+	"shared/global"
 	"shared/utils"
 )
 
@@ -25,7 +25,7 @@ type DefaultError struct {
 }
 
 var (
-	logger = logger2.GetLogger()
+	logger = global.Logger
 )
 
 func (e *DefaultError) WriteError(c *gin.Context) {

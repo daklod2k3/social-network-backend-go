@@ -1,10 +1,9 @@
 package auth
 
 import (
-	"auth/entity"
-	authUtils "auth/utils"
+	"auth/internal/utils"
 	"github.com/gin-gonic/gin"
-	authEntity "shared/entity/auth"
+	"shared/entity/auth"
 	"shared/interfaces"
 )
 
@@ -56,7 +55,7 @@ func NewController() *Controller {
 }
 
 func (ctl *Controller) LoginHandler(c *gin.Context) {
-	var form entity.LoginMail
+	var form authEntity.LoginMail
 	if err := c.ShouldBindJSON(&form); err != nil {
 		c.AbortWithError(400, err)
 	}
@@ -70,7 +69,7 @@ func (ctl *Controller) LoginHandler(c *gin.Context) {
 }
 
 func (ctl *Controller) RegisterHandler(c *gin.Context) {
-	var form entity.RegisterMail
+	var form authEntity.RegisterMail
 	if err := c.ShouldBindJSON(&form); err != nil {
 		c.AbortWithError(400, err)
 	}

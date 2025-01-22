@@ -6,6 +6,7 @@ import (
 )
 
 type Configuration struct {
+	LogLevel string
 	Port     int
 	Database struct {
 		ConnectString string
@@ -24,7 +25,7 @@ type Configuration struct {
 	}
 }
 
-func GetConfig() *Configuration {
+func NewConfig() *Configuration {
 	fmt.Println("init config")
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath("config") // path to look for the config file in
@@ -32,9 +33,9 @@ func GetConfig() *Configuration {
 	if err := viper.ReadInConfig(); err != nil { // Handle errors reading the config file
 		panic(fmt.Errorf("fatal auth config file: %w", err))
 	}
-	var config Configuration
-	if err := viper.Unmarshal(&config); err != nil {
+	var conf Configuration
+	if err := viper.Unmarshal(&conf); err != nil {
 		panic(fmt.Errorf("parse config file auth: %w", err))
 	}
-	return &config
+	return &conf
 }

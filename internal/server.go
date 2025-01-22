@@ -1,11 +1,11 @@
 package internal
 
 import (
+	"core/internal/global"
 	"fmt"
-	"github.com/spf13/viper"
-	"go.uber.org/zap"
 	"net/http"
 	"shared/database"
+	global2 "shared/global"
 	"shared/logger"
 	authRpcClient "shared/rpc/client/auth"
 	"time"
@@ -16,19 +16,26 @@ import (
 type Server struct {
 	port        int
 	db          database.Service
-	Logger      *zap.Logger
+	Logger      *logger.LoggerZap
 	AuthService authRpcClient.AuthRpcService
 }
 
-var (
-	authService = authRpcClient.NewClient()
-)
-
 func NewServer() *http.Server {
-	port := viper.GetInt("port")
+	// init global of this pkg
+	global.InitGlobal()
+
+	// init global of shared pkg
+	global2.InitGlobal(&global2.Type{
+		Config: global.Config,
+		Logger: global.Logger,
+	})
+
+	authService := authRpcClient.NewClient()
+
+	port := global.Config.Port
 	NewServer := &Server{
 		port:        port,
-		Logger:      logger.GetLogger(),
+		Logger:      global.Logger,
 		db:          database.New(),
 		AuthService: authService,
 	}

@@ -1,14 +1,14 @@
 package authUtils
 
 import (
+	"auth/internal/global"
 	"github.com/gin-gonic/gin"
 	"shared/entity"
 	authEntity "shared/entity/auth"
-	logger2 "shared/logger"
 	"shared/utils"
 )
 
-var logger = logger2.GetLogger()
+var logger = global.Logger
 
 func GetUserFromContext(c *gin.Context) *entity.User {
 	if c.GetHeader("x-profile") == "not created" {

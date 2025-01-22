@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"shared/config"
+	"shared/global"
+
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
@@ -22,11 +23,8 @@ type service struct {
 	schema *mongo.Database
 }
 
-var (
-	connectString = config.GetConfig().Database.ConnectString
-)
-
 func New() Service {
+	connectString := global.Config.Database.ConnectString
 	fmt.Println("Connecting to", connectString)
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(connectString))
 	if err != nil {
