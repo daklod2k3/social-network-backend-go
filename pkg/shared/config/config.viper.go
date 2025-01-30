@@ -23,6 +23,9 @@ type Configuration struct {
 		Ref string
 		Key string
 	}
+	Kafka struct {
+		Url string
+	}
 }
 
 func NewConfig() *Configuration {

@@ -2,3 +2,12 @@
 	path = pkg/auth
 	url = https://github.com/daklod2k3/social-auth-serivce.git
 	branch = main
+[submodule "pkg/post"]
+	path = pkg/post
+	url = https://github.com/daklod2k3/social-post-service.git
+	branch = main
+[submodule "pkg/news_feed"]
+	path = pkg/news_feed
+	url = https://github.com/daklod2k3/social-feed-service.git
+	branch = main
+

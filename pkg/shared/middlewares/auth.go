@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	authEntity "shared/entity/auth"
-	logger2 "shared/logger"
+	"shared/internal/global"
 	authRpcClient "shared/rpc/client/auth"
 	"strings"
 )
@@ -22,10 +22,6 @@ import (
 //func NewMiddleware(authService *interfaces.AuthService) gin.HandlerFunc {
 //
 //}
-
-var (
-	logger = logger2.GetLogger()
-)
 
 func AuthMiddleware(authService authRpcClient.AuthRpcService) gin.HandlerFunc {
 	if authService == nil {
@@ -57,7 +53,7 @@ func AuthMiddleware(authService authRpcClient.AuthRpcService) gin.HandlerFunc {
 			return
 		}
 
-		//logger.Info(accessToken + " " + refreshToken)
+		//global.Logger.Info(refreshToken)
 
 		session, err := authService.GetSession(&authEntity.SessionRequest{
 			AccessToken:  accessToken,
@@ -68,7 +64,7 @@ func AuthMiddleware(authService authRpcClient.AuthRpcService) gin.HandlerFunc {
 
 		if err != nil {
 			//authEntity.ParseError(err, 401).WriteError(c)
-			logger.Error(err.Error())
+			global.Logger.Info(err.Error())
 			c.AbortWithStatus(401)
 			return
 		}
@@ -78,9 +74,11 @@ func AuthMiddleware(authService authRpcClient.AuthRpcService) gin.HandlerFunc {
 		}
 
 		js, err := json.Marshal(session)
+		//global.Logger.Sugar().Infoln(session)
+		//fmt.Printf("%#v", session)
 
 		if err != nil {
-			logger.Error(err.Error())
+			global.Logger.Error(err.Error())
 		}
 
 		c.Set("session", string(js))

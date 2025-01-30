@@ -4,5 +4,6 @@ use (
 	.
 	"pkg/shared"
 	"pkg/auth"
-
+	"pkg/post"
+	"pkg/news_feed"
 )

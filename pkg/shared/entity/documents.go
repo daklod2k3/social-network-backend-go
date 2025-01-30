@@ -3,6 +3,7 @@ package entity
 import (
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 )
 
 // User represents the Users collection
@@ -25,9 +26,20 @@ type Follow struct {
 // Post represents the Posts collection
 type Post struct {
 	ID            primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	CreatedBy     primitive.ObjectID `bson:"created_by" json:"created_by"`
+	CreatedAt     time.Time          `bson:"created_at,omitempty" json:"created_at"`
+	CreatedBy     uuid.UUID          `bson:"created_by" json:"created_by"`
 	Content       string             `bson:"content" json:"content"`
-	CreatedAt     primitive.DateTime `bson:"created_at" json:"created_at"`
+	TotalLike     int                `bson:"total_like" json:"total_like"`
+	TotalComments int                `bson:"total_comments" json:"total_comments"`
+	TotalShare    int                `bson:"total_share" json:"total_share"`
+	Videos        []Resource         `bson:"videos" json:"videos"`
+	Images        []Resource         `bson:"images" json:"images"`
+}
+
+type PostWrite struct {
+	ID            primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	CreatedBy     uuid.UUID          `bson:"created_by" json:"created_by"`
+	Content       string             `bson:"content" json:"content"`
 	TotalLike     int                `bson:"total_like" json:"total_like"`
 	TotalComments int                `bson:"total_comments" json:"total_comments"`
 	TotalShare    int                `bson:"total_share" json:"total_share"`
@@ -68,4 +80,22 @@ type NewsFeed struct {
 type Resource struct {
 	ID   primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Path string             `bson:"path" json:"path"`
+}
+
+type defaultDocument struct {
+	CreatedAt time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
+}
+
+func (u *defaultDocument) SetCreatedAt() {
+
+	if u.CreatedAt.IsZero() {
+		u.CreatedAt = time.Now()
+	}
+}
+
+func (u *defaultDocument) SetUpdatedAt() {
+	if u.UpdatedAt.IsZero() {
+		u.UpdatedAt = time.Now()
+	}
 }

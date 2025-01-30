@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"shared/database"
-	global2 "shared/global"
+	"shared/initialize"
 	"shared/logger"
 	authRpcClient "shared/rpc/client/auth"
 	"time"
@@ -25,7 +25,7 @@ func NewServer() *http.Server {
 	global.InitGlobal()
 
 	// init global of shared pkg
-	global2.InitGlobal(&global2.Type{
+	initialize.InitGlobal(&initialize.Type{
 		Config: global.Config,
 		Logger: global.Logger,
 	})
