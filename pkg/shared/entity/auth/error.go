@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 	"net/http"
 	"shared/entity"
-	"shared/global"
+	"shared/internal/global"
 	"shared/utils"
 )
 
@@ -23,10 +23,6 @@ type DefaultError struct {
 	Error string
 	Msg   string
 }
-
-var (
-	logger = global.Logger
-)
 
 func (e *DefaultError) WriteError(c *gin.Context) {
 	entity.ResponseJson{Status: e.Code, Error: e.Error, Message: e.Msg}.WriteError(c)
@@ -46,22 +42,21 @@ func ParseError(err error, defaultCode int) *DefaultError {
 		defaultCode = http.StatusInternalServerError
 	}
 
-	logger.Error(err.Error())
-
+	global.Logger.Error(err.Error())
 	jsonErr := utils.Deserialize(err.Error(), &supabaseError)
 	if jsonErr != nil {
-		logger.Error(jsonErr.Error())
+		global.Logger.Error(jsonErr.Error())
 	}
 
 	switch {
 
 	case jsonErr == nil:
-		logger.Error("supabase error")
+		global.Logger.Error("supabase error")
 		return &DefaultError{supabaseError.Code, supabaseError.ErrorCode, supabaseError.Msg}
 
 	case status.Code(err) == codes.Aborted:
 		grpcError = status.Convert(err)
-		logger.Error(grpcError.Message())
+		global.Logger.Error(grpcError.Message())
 		ParseError(errors.New(grpcError.Message()), defaultCode)
 	}
 

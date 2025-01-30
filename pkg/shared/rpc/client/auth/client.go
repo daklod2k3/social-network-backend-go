@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"shared/entity"
 	authEntity "shared/entity/auth"
-	"shared/global"
+	"shared/internal/global"
 	"shared/rpc/pb"
 )
 
@@ -57,14 +57,13 @@ func (c *authRpc) GetSession(form *authEntity.SessionRequest) (*authEntity.AuthR
 
 	var user *entity.User = nil
 	if req.User != nil {
-		id, _ := primitive.ObjectIDFromHex(req.User.Id)
-		userId, _ := uuid.Parse(req.User.UserId)
-		user = &entity.User{
-			ID:          id,
-			DisplayName: req.User.DisplayName,
-			AvatarPath:  req.User.AvatarPath,
-			Status:      req.User.Status,
-			UserId:      userId,
+		var tmp entity.User
+		err = bson.Unmarshal(req.User, &tmp)
+		if err != nil {
+			global.Logger.Error(err.Error())
+			//global.Logger.Info(fmt.Sprintf("user: %+v", user))
+		} else {
+			user = &tmp
 		}
 	}
 

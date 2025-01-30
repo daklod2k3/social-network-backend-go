@@ -2,6 +2,6 @@ package database
 
 import "github.com/gin-gonic/gin"
 
-func ApplyRoute(r *gin.RouterGroup) {
-	r.GET("/health", HealthHandler)
+func (s *service) ApplyRoute(r *gin.RouterGroup) {
+	r.GET("/health", s.HealthHandler)
 }

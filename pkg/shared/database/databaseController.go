@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func HealthHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, New().Health())
+func (s *service) HealthHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, s.Health())
 }

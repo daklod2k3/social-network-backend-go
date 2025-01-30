@@ -5,6 +5,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
+	"time"
 )
 
 func GetLogger() *zap.Logger {
@@ -33,13 +34,23 @@ func NewLogger(levelDebug string) *LoggerZap {
 
 	hook := lumberjack.Logger{
 		Filename:   "./logs/app.logger",
-		MaxSize:    500, // megabytes
+		MaxSize:    10, // megabytes
 		MaxBackups: 3,
 		MaxAge:     28,   //days
 		Compress:   true, // disabled by default
 	}
+
+	var encoder zapcore.Encoder
+	switch level {
+	case zapcore.DebugLevel:
+		encoder = zapcore.NewConsoleEncoder(GetEncoderLog())
+	case zapcore.InfoLevel:
+		encoder = zapcore.NewJSONEncoder(GetEncoderLog())
+	}
+
 	core := zapcore.NewCore(
-		GetEncoderLog(),
+		encoder,
+		//zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&hook)),
 		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&hook)),
 		level,
 	)
@@ -47,16 +58,32 @@ func NewLogger(levelDebug string) *LoggerZap {
 	return &LoggerZap{zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))}
 }
 
-func GetEncoderLog() zapcore.Encoder {
+func GetEncoderLog() zapcore.EncoderConfig {
 	encoderConfig := zap.NewProductionEncoderConfig()
 
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
 	encoderConfig.TimeKey = "time"
 
-	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	encoderConfig.CallerKey = "caller"
+
+	encoderConfig.LevelKey = "level"
+
+	encoderConfig.MessageKey = "message"
+
+	encoderConfig.EncodeLevel = CustomLevelEncoder
 
 	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
 
-	return zapcore.NewJSONEncoder(encoderConfig)
+	encoderConfig.EncodeTime = SyslogTimeEncoder
+
+	return encoderConfig
+}
+
+func SyslogTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+	enc.AppendString(t.Format("2006-01-02 15:04:05"))
+}
+
+func CustomLevelEncoder(level zapcore.Level, enc zapcore.PrimitiveArrayEncoder) {
+	enc.AppendString("[" + level.CapitalString() + "]")
 }

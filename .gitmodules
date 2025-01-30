@@ -6,3 +6,8 @@
 	path = pkg/post
 	url = https://github.com/daklod2k3/social-post-service.git
 	branch = main
+[submodule "pkg/news_feed"]
+	path = pkg/news_feed
+	url = https://github.com/daklod2k3/social-feed-service.git
+	branch = main
+
